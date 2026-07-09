@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+    <main class="pagina">
+        <section class="tarjeta">
+
+            <div class="decoracion">✨</div>
+            <div class="icono-bebe">👶🏻</div>
+
+            <h1>{{ titulo }}</h1>
+            <h2>{{ bebe }}</h2>
+
+            <p class="mensaje">
+                Con mucho amor preparamos esta lista de regalos para recibir a nuestra princesa.
+            </p>
+
+            <div class="separador">🎀</div>
+
+            <div class="contador">
+    <div>
+        <strong>{{ total_disponibles }}</strong>
+        <span>Disponibles</span>
+    </div>
+
+    <div>
+        <strong>{{ total_reservados }}</strong>
+        <span>Reservados</span>
+    </div>
+
+    <div>
+        <strong>{{ total_regalos }}</strong>
+        <span>Total</span>
+    </div>
+</div>
+
+            <h3>🎁 Lista de regalos</h3>
+
+            {% for regalo in regalos %}
+            <div class="regalo">
+
+                <div class="info-regalo">
+                    <span class="emoji">{{ regalo.emoji }}</span>
+
+                    <div>
+                        <strong>{{ regalo.nombre }}</strong>
+                        <p>{{ regalo.descripcion }}</p>
+                    </div>
+                </div>
+
+                <button 
+                    data-id="{{ regalo.id }}"
+                    data-nombre="{{ regalo.nombre }}"
+                    onclick="abrirModalDesdeBoton(this)">
+                    Reservar
+                </button>
+
+            </div>
+            {% endfor %}
+
+        </section>
+    </main>
+
+    <div class="modal" id="modalReserva">
+        <div class="modal-contenido">
+
+            <button class="cerrar" onclick="cerrarModal()">×</button>
+
+            <h3>🎁 Reservar regalo</h3>
+
+            <p id="nombreRegaloSeleccionado"></p>
+
+            <form id="formReserva">
+
+                <input
+                    type="hidden"
+                    id="regalo_id"
+                    name="regalo_id">
+
+                <input
+                    type="text"
+                    name="nombre"
+                    placeholder="Tu nombre"
+                    required>
+
+                <input
+                    type="text"
+                    name="apellido"
+                    placeholder="Tu apellido"
+                    required>
+
+                <input
+                    type="tel"
+                    name="telefono"
+                    placeholder="Tu teléfono"
+                    required>
+
+                <button type="submit">
+                    Confirmar reserva
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+<div class="modal" id="modalGracias">
+    <div class="modal-contenido">
+
+        <div class="icono-bebe">💖</div>
+
+        <h3>¡Muchas gracias!</h3>
+
+        <p class="mensaje">
+            Tu regalo quedó reservado correctamente para Thianna Amira.
+        </p>
+
+        <button onclick="cerrarGracias()">
+            Cerrar
+        </button>
+
+    </div>
+</div>
+    <script src="/static/js/app.js"></script>
+
+</body>
+
+</html>

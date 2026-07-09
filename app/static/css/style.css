@@ -1,0 +1,244 @@
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top left, #ffe4f1, transparent 35%),
+        radial-gradient(circle at bottom right, #dbeafe, transparent 35%),
+        linear-gradient(135deg, #fff7ed, #fdf2f8);
+}
+
+.pagina{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+}
+
+.tarjeta{
+    width:100%;
+    max-width:760px;
+    background:rgba(255,255,255,0.82);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.8);
+    border-radius:30px;
+    padding:45px;
+    text-align:center;
+    box-shadow:0 25px 70px rgba(150, 90, 120, 0.20);
+    position:relative;
+    overflow:hidden;
+}
+
+.decoracion{
+    position:absolute;
+    top:22px;
+    right:28px;
+    font-size:28px;
+}
+
+.icono-bebe{
+    width:85px;
+    height:85px;
+    margin:0 auto 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    background:linear-gradient(135deg, #fce7f3, #dbeafe);
+    border-radius:50%;
+    box-shadow:0 12px 30px rgba(0,0,0,0.10);
+}
+
+h1{
+    margin:10px 0 5px;
+    color:#7c3aed;
+    font-size:38px;
+}
+
+h2{
+    margin:0;
+    color:#374151;
+    font-size:22px;
+}
+
+.mensaje{
+    color:#6b7280;
+    max-width:520px;
+    margin:18px auto;
+    line-height:1.6;
+}
+
+.separador{
+    font-size:26px;
+    margin:18px 0;
+}
+
+h3{
+    color:#be185d;
+    font-size:24px;
+    margin-bottom:20px;
+}
+
+.regalo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin:16px 0;
+    padding:18px;
+    border-radius:20px;
+    background:white;
+    border:1px solid #fbcfe8;
+    text-align:left;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.regalo:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 35px rgba(0,0,0,0.10);
+}
+
+.regalo strong{
+    color:#374151;
+    font-size:17px;
+}
+
+.regalo p{
+    margin:5px 0 0;
+    color:#9ca3af;
+    font-size:14px;
+}
+
+.emoji{
+    font-size:24px;
+    margin-right:8px;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(135deg, #ec4899, #8b5cf6);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(236,72,153,0.30);
+    transition:transform .2s ease, opacity .2s ease;
+}
+
+button:hover{
+    transform:scale(1.05);
+    opacity:0.92;
+}
+
+@media(max-width:600px){
+    .tarjeta{
+        padding:28px 20px;
+    }
+
+    h1{
+        font-size:30px;
+    }
+
+    h2{
+        font-size:18px;
+    }
+
+    .regalo{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    button{
+        width:100%;
+    }
+}
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-contenido{
+    width:100%;
+    max-width:420px;
+    background:white;
+    border-radius:25px;
+    padding:30px;
+    text-align:center;
+    position:relative;
+    box-shadow:0 25px 70px rgba(0,0,0,0.25);
+}
+
+.cerrar{
+    position:absolute;
+    top:15px;
+    right:15px;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    padding:0;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+input{
+    padding:14px;
+    border:1px solid #fbcfe8;
+    border-radius:14px;
+    font-size:15px;
+}
+#modalGracias .modal-contenido{
+    animation: aparecer .35s ease;
+}
+
+@keyframes aparecer{
+    from{
+        opacity:0;
+        transform:scale(0.85);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+.contador{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:12px;
+    margin:20px 0 25px;
+}
+
+.contador div{
+    background:#fff;
+    border:1px solid #fbcfe8;
+    border-radius:18px;
+    padding:14px 10px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.05);
+}
+
+.contador strong{
+    display:block;
+    font-size:26px;
+    color:#be185d;
+}
+
+.contador span{
+    font-size:13px;
+    color:#6b7280;
+}

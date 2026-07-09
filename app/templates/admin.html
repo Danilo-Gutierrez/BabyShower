@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<main class="pagina">
+    <section class="tarjeta">
+
+        <h1>📋 {{ titulo }}</h1>
+
+        <p class="mensaje">
+            Reservas realizadas para el Baby Shower de Thianna Amira.
+        </p>
+
+        {% if reservas %}
+
+            {% for reserva in reservas %}
+            <div class="regalo">
+                <div>
+                    <strong>Reserva #{{ reserva.id }}</strong>
+                    <p>🎁 {{ reserva.regalo }}</p>
+                    <p>👤 {{ reserva.nombre }} {{ reserva.apellido }}</p>
+                    <p>📞 {{ reserva.telefono }}</p>
+                </div>
+            </div>
+            {% endfor %}
+
+        {% else %}
+
+            <p>No hay reservas todavía.</p>
+
+        {% endif %}
+
+    </section>
+</main>
+
+</body>
+</html>
