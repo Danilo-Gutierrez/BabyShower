@@ -4,81 +4,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{{ titulo }}</title>
+
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <body>
 
-<div class="banner">
-    <img src="/static/img/baby-banner.jpg" alt="Baby Shower">
-</div>
+    <header class="banner">
+        <img
+            src="/static/img/baby-banner.jpg"
+            alt="Baby Shower de Thianna Amira"
+        >
+    </header>
 
     <main class="pagina">
+
         <section class="tarjeta">
 
             <div class="decoracion">✨</div>
-            <div class="icono-bebe">👶🏻</div>
+
+            <div class="icono-bebe">
+                👶🏻
+            </div>
 
             <h1>{{ titulo }}</h1>
+
             <h2>{{ bebe }}</h2>
 
             <p class="mensaje">
-                Con mucho amor preparamos esta lista de regalos para recibir a nuestra princesa.
+                Con mucho amor preparamos esta lista de regalos
+                para recibir a nuestra princesa.
             </p>
 
-            <div class="separador">🎀</div>
+            <div class="separador">
+                🎀
+            </div>
 
-            <div class="contador">
-    <div>
-        <strong>{{ total_disponibles }}</strong>
-        <span>Disponibles</span>
-    </div>
+            <section
+                class="contador"
+                aria-label="Resumen de regalos"
+            >
 
-    <div>
-        <strong>{{ total_reservados }}</strong>
-        <span>Reservados</span>
-    </div>
+                <div>
+                    <strong>{{ total_disponibles }}</strong>
+                    <span>Disponibles</span>
+                </div>
 
-    <div>
-        <strong>{{ total_regalos }}</strong>
-        <span>Total</span>
-    </div>
-</div>
+                <div>
+                    <strong>{{ total_reservados }}</strong>
+                    <span>Reservados</span>
+                </div>
+
+                <div>
+                    <strong>{{ total_regalos }}</strong>
+                    <span>Total</span>
+                </div>
+
+            </section>
 
             <h3>🎁 Lista de regalos</h3>
 
-            {% for regalo in regalos %}
-            <div class="regalo">
+            <section class="lista-regalos">
 
-                <div class="info-regalo">
-                    <span class="emoji">{{ regalo.emoji }}</span>
+                {% for regalo in regalos %}
 
-                    <div>
-                        <strong>{{ regalo.nombre }}</strong>
-                        <p>{{ regalo.descripcion }}</p>
+                <article class="regalo regalo-tarjeta">
+
+                    <div class="regalo-imagen">
+
+                        {% if regalo.imagen %}
+
+                        <img
+                            src="/static/img/{{ regalo.imagen }}"
+                            alt="{{ regalo.nombre }}"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        >
+
+                        <div
+                            class="regalo-sin-imagen"
+                            style="display:none;"
+                        >
+                            {{ regalo.emoji or "🎁" }}
+                        </div>
+
+                        {% else %}
+
+                        <div class="regalo-sin-imagen">
+                            {{ regalo.emoji or "🎁" }}
+                        </div>
+
+                        {% endif %}
+
                     </div>
+
+                    <div class="regalo-contenido">
+
+                        {% if regalo.categoria %}
+
+                        <span class="categoria">
+                            {{ regalo.categoria }}
+                        </span>
+
+                        {% endif %}
+
+                        <div class="regalo-titulo">
+
+                            <span class="emoji">
+                                {{ regalo.emoji or "🎁" }}
+                            </span>
+
+                            <strong>
+                                {{ regalo.nombre }}
+                            </strong>
+
+                        </div>
+
+                        {% if regalo.descripcion %}
+
+                        <p class="regalo-descripcion">
+                            {{ regalo.descripcion }}
+                        </p>
+
+                        {% endif %}
+
+                        {% if regalo.precio and regalo.precio > 0 %}
+
+                        <p class="precio">
+                            Valor referencial:
+                            ${{ "{:,.0f}".format(regalo.precio).replace(",", ".") }}
+                        </p>
+
+                        {% endif %}
+
+                        <div class="acciones-regalo">
+
+                            {% if regalo.enlace %}
+
+                            <a
+                                class="boton-secundario"
+                                href="{{ regalo.enlace }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Ver producto
+                            </a>
+
+                            {% endif %}
+
+                            <button
+                                type="button"
+                                class="boton-reservar"
+                                data-id="{{ regalo.id }}"
+                                data-nombre="{{ regalo.nombre }}"
+                                onclick="abrirModalDesdeBoton(this)"
+                            >
+                                Reservar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                {% else %}
+
+                <div class="sin-regalos">
+
+                    <div class="icono-bebe">
+                        💖
+                    </div>
+
+                    <h3>
+                        Todos los regalos fueron reservados
+                    </h3>
+
+                    <p class="mensaje">
+                        Muchas gracias por acompañarnos
+                        en este momento tan especial.
+                    </p>
+
                 </div>
 
-                <button 
-                    data-id="{{ regalo.id }}"
-                    data-nombre="{{ regalo.nombre }}"
-                    onclick="abrirModalDesdeBoton(this)">
-                    Reservar
-                </button>
+                {% endfor %}
 
-            </div>
-            {% endfor %}
+            </section>
 
         </section>
+
     </main>
 
-    <div class="modal" id="modalReserva">
+    <div
+        class="modal"
+        id="modalReserva"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloModalReserva"
+    >
+
         <div class="modal-contenido">
 
-            <button class="cerrar" onclick="cerrarModal()">×</button>
+            <button
+                type="button"
+                class="cerrar"
+                onclick="cerrarModal()"
+                aria-label="Cerrar ventana"
+            >
+                ×
+            </button>
 
-            <h3>🎁 Reservar regalo</h3>
+            <h3 id="tituloModalReserva">
+                🎁 Reservar regalo
+            </h3>
 
             <p id="nombreRegaloSeleccionado"></p>
 
@@ -87,25 +227,32 @@
                 <input
                     type="hidden"
                     id="regalo_id"
-                    name="regalo_id">
+                    name="regalo_id"
+                >
 
                 <input
                     type="text"
                     name="nombre"
                     placeholder="Tu nombre"
-                    required>
+                    autocomplete="given-name"
+                    required
+                >
 
                 <input
                     type="text"
                     name="apellido"
                     placeholder="Tu apellido"
-                    required>
+                    autocomplete="family-name"
+                    required
+                >
 
                 <input
                     type="tel"
                     name="telefono"
                     placeholder="Tu teléfono"
-                    required>
+                    autocomplete="tel"
+                    required
+                >
 
                 <button type="submit">
                     Confirmar reserva
@@ -114,24 +261,43 @@
             </form>
 
         </div>
-    </div>
-<div class="modal" id="modalGracias">
-    <div class="modal-contenido">
-
-        <div class="icono-bebe">💖</div>
-
-        <h3>¡Muchas gracias!</h3>
-
-        <p class="mensaje">
-            Tu regalo quedó reservado correctamente para Thianna Amira.
-        </p>
-
-        <button onclick="cerrarGracias()">
-            Cerrar
-        </button>
 
     </div>
-</div>
+
+    <div
+        class="modal"
+        id="modalGracias"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloModalGracias"
+    >
+
+        <div class="modal-contenido">
+
+            <div class="icono-bebe">
+                💖
+            </div>
+
+            <h3 id="tituloModalGracias">
+                ¡Muchas gracias!
+            </h3>
+
+            <p class="mensaje">
+                Tu regalo quedó reservado correctamente
+                para Thianna Amira.
+            </p>
+
+            <button
+                type="button"
+                onclick="cerrarGracias()"
+            >
+                Cerrar
+            </button>
+
+        </div>
+
+    </div>
+
     <script src="/static/js/app.js"></script>
 
 </body>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cancelar reserva</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+    <main class="pagina pagina-cancelar">
+
+        <section class="tarjeta tarjeta-cancelar">
+
+            <div class="icono-bebe">
+                💖
+            </div>
+
+            <h1>Cancelar reserva</h1>
+
+            <p class="mensaje">
+                Si cambiaste de opinión o reservaste un regalo por error,
+                puedes liberar el regalo utilizando el código que recibiste
+                al momento de realizar la reserva.
+            </p>
+
+            {% if cancelada %}
+            <div class="alerta alerta-exito">
+                ✅ Tu reserva fue cancelada correctamente.
+                <br>
+                El regalo volvió a estar disponible.
+            </div>
+            {% endif %}
+
+            {% if error == "codigo" %}
+            <div class="alerta alerta-error">
+                ⚠️ El código ingresado no existe o ya fue utilizado.
+            </div>
+            {% endif %}
+
+            <form action="/cancelar" method="post">
+
+                <input
+                    type="text"
+                    name="codigo"
+                    placeholder="Ejemplo: 7BC08B"
+                    autocomplete="off"
+                    autocapitalize="characters"
+                    maxlength="6"
+                    required
+                    style="
+                        text-transform: uppercase;
+                        text-align: center;
+                        letter-spacing: 4px;
+                        font-size: 22px;
+                        font-weight: bold;
+                    "
+                >
+
+                <button type="submit">
+                    Cancelar reserva
+                </button>
+
+            </form>
+
+            <div
+                style="
+                    margin-top:20px;
+                    display:flex;
+                    justify-content:center;
+                "
+            >
+
+                <a
+                    href="/"
+                    class="boton-secundario"
+                >
+                    ← Volver a la lista de regalos
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

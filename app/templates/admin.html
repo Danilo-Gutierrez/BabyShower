@@ -3,42 +3,312 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{{ titulo }}</title>
+
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <body>
 
-<main class="pagina">
-    <section class="tarjeta">
+    <main class="pagina pagina-admin">
 
-        <h1>📋 {{ titulo }}</h1>
+        <section class="tarjeta panel-admin tarjeta-admin">
 
-        <p class="mensaje">
-            Reservas realizadas para el Baby Shower de Thianna Amira.
-        </p>
+            <header class="admin-encabezado">
 
-        {% if reservas %}
-
-            {% for reserva in reservas %}
-            <div class="regalo">
                 <div>
-                    <strong>Reserva #{{ reserva.id }}</strong>
-                    <p>🎁 {{ reserva.regalo }}</p>
-                    <p>👤 {{ reserva.nombre }} {{ reserva.apellido }}</p>
-                    <p>📞 {{ reserva.telefono }}</p>
+                    <span class="admin-etiqueta">
+                        Administración
+                    </span>
+
+                    <h1>📋 {{ titulo }}</h1>
+
+                    <p class="mensaje">
+                        Gestiona los regalos y revisa las reservas
+                        del Baby Shower de Thianna Amira.
+                    </p>
                 </div>
+
+                <a class="boton-secundario" href="/">
+                    Ver página pública
+                </a>
+
+            </header>
+
+            <nav class="admin-menu">
+
+                <a href="#nuevo-regalo">
+                    ➕ Agregar regalo
+                </a>
+
+                <a href="#reservas">
+                    👥 Ver reservas
+                </a>
+
+            </nav>
+
+            {% if guardado %}
+            <div class="alerta alerta-exito">
+                ✅ Regalo agregado correctamente.
             </div>
-            {% endfor %}
+            {% endif %}
 
-        {% else %}
+            {% if liberada %}
+            <div class="alerta alerta-exito">
+                ✅ Reserva liberada correctamente.
+                El regalo volvió a estar disponible.
+            </div>
+            {% endif %}
 
-            <p>No hay reservas todavía.</p>
+            {% if error == "nombre" %}
+            <div class="alerta alerta-error">
+                ⚠️ Debes ingresar el nombre del regalo.
+            </div>
+            {% endif %}
 
-        {% endif %}
+            <section class="admin-seccion" id="nuevo-regalo">
 
-    </section>
-</main>
+                <div class="admin-titulo-seccion">
+
+                    <div>
+                        <span class="admin-etiqueta">
+                            Nuevo elemento
+                        </span>
+
+                        <h2>🎁 Agregar regalo</h2>
+                    </div>
+
+                </div>
+
+                <form
+                    class="form-admin"
+                    id="formNuevoRegalo"
+                    action="/admin/regalos"
+                    method="post"
+                >
+
+                    <div class="campo-formulario">
+                        <label for="emoji">
+                            Emoji
+                        </label>
+
+                        <input
+                            id="emoji"
+                            name="emoji"
+                            type="text"
+                            placeholder="🧸"
+                            maxlength="10"
+                        >
+                    </div>
+
+                    <div class="campo-formulario campo-amplio">
+                        <label for="nombre">
+                            Nombre del regalo
+                        </label>
+
+                        <input
+                            id="nombre"
+                            name="nombre"
+                            type="text"
+                            placeholder="Ejemplo: Porta bebé"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo-formulario campo-amplio">
+                        <label for="descripcion">
+                            Descripción
+                        </label>
+
+                        <textarea
+                            id="descripcion"
+                            name="descripcion"
+                            rows="4"
+                            placeholder="Describe brevemente el regalo"
+                        ></textarea>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="categoria">
+                            Categoría
+                        </label>
+
+                        <select
+                            id="categoria"
+                            name="categoria"
+                        >
+                            <option value="">Seleccionar</option>
+                            <option value="Alimentación">Alimentación</option>
+                            <option value="Baño">Baño</option>
+                            <option value="Dormitorio">Dormitorio</option>
+                            <option value="Higiene">Higiene</option>
+                            <option value="Juguetes">Juguetes</option>
+                            <option value="Ropa">Ropa</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="precio">
+                            Precio referencial
+                        </label>
+
+                        <input
+                            id="precio"
+                            name="precio"
+                            type="number"
+                            min="0"
+                            placeholder="19990"
+                        >
+                    </div>
+
+                    <div class="campo-formulario campo-amplio">
+                        <label for="imagen">
+                            Nombre de la imagen
+                        </label>
+
+                        <input
+                            id="imagen"
+                            name="imagen"
+                            type="text"
+                            placeholder="porta-bebe.jpg"
+                        >
+
+                        <small>
+                            La imagen debe existir en
+                            <code>app/static/img</code>
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario campo-amplio">
+                        <label for="enlace">
+                            Enlace de compra
+                        </label>
+
+                        <input
+                            id="enlace"
+                            name="enlace"
+                            type="url"
+                            placeholder="https://..."
+                        >
+                    </div>
+
+                    <div class="acciones-formulario campo-amplio">
+
+                        <button type="submit">
+                            💾 Guardar regalo
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+            <section class="admin-seccion" id="reservas">
+
+                <div class="admin-titulo-seccion">
+
+                    <div>
+                        <span class="admin-etiqueta">
+                            Personas registradas
+                        </span>
+
+                        <h2>👥 Reservas realizadas</h2>
+                    </div>
+
+                    <span class="admin-contador">
+                        {{ reservas | length }}
+                    </span>
+
+                </div>
+
+                {% if reservas %}
+
+                <div class="lista-reservas">
+
+                    {% for reserva in reservas %}
+
+                    <article class="reserva-admin">
+
+                        <div class="reserva-numero">
+                            #{{ reserva.id }}
+                        </div>
+
+                        <div class="reserva-detalle">
+
+                            <strong>
+                                {{ reserva.regalo }}
+                            </strong>
+
+                            <p>
+                                👤 {{ reserva.nombre }}
+                                {{ reserva.apellido }}
+                            </p>
+
+                            <p>
+                                📞 {{ reserva.telefono }}
+                            </p>
+
+                        </div>
+
+                        <div class="reserva-acciones">
+
+                            <form
+                                action="/admin/reservas/{{ reserva.id }}/liberar"
+                                method="post"
+                                onsubmit="return confirm(
+                                    '¿Seguro que deseas liberar esta reserva? El regalo volverá a estar disponible.'
+                                );"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="boton-peligro"
+                                >
+                                    🔓 Liberar reserva
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </article>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="sin-regalos">
+
+                    <div class="icono-bebe">
+                        🎁
+                    </div>
+
+                    <h3>
+                        No hay reservas todavía
+                    </h3>
+
+                    <p class="mensaje">
+                        Las reservas aparecerán aquí cuando los
+                        invitados comiencen a reservar regalos.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+            </section>
+
+        </section>
+
+    </main>
 
 </body>
+
 </html>

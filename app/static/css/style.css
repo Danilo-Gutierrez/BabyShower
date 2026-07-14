@@ -23,6 +23,7 @@ body{
     position:relative;
     z-index:2;
 }
+
 .tarjeta{
     width:100%;
     max-width:900px;
@@ -40,6 +41,7 @@ body{
     position:relative;
     overflow:hidden;
 }
+
 .decoracion{
     position:absolute;
     top:22px;
@@ -64,7 +66,6 @@ h1{
     margin:10px 0;
     font-size:46px;
     font-weight:800;
-
     background:linear-gradient(90deg,#ec4899,#8b5cf6);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -76,6 +77,7 @@ h2{
     color:#444;
     font-weight:600;
 }
+
 .mensaje{
     color:#6b7280;
     max-width:520px;
@@ -147,32 +149,20 @@ button:hover{
     opacity:0.92;
 }
 
-@media(max-width:600px){
-    .tarjeta{
-        padding:28px 20px;
-    }
-
-    h1{
-        font-size:30px;
-    }
-
-    h2{
-        font-size:18px;
-    }
-
-    .regalo{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    button{
-        width:100%;
-    }
+button:disabled{
+    cursor:not-allowed;
+    opacity:.6;
 }
+
+/* ==========================
+   MODALES
+========================== */
+
 .modal{
     display:none;
     position:fixed;
     inset:0;
+    z-index:1000;
     background:rgba(0,0,0,0.45);
     align-items:center;
     justify-content:center;
@@ -212,8 +202,9 @@ input{
     border-radius:14px;
     font-size:15px;
 }
+
 #modalGracias .modal-contenido{
-    animation: aparecer .35s ease;
+    animation:aparecer .35s ease;
 }
 
 @keyframes aparecer{
@@ -227,6 +218,11 @@ input{
         transform:scale(1);
     }
 }
+
+/* ==========================
+   CONTADORES
+========================== */
+
 .contador{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
@@ -253,6 +249,10 @@ input{
     color:#6b7280;
 }
 
+/* ==========================
+   BANNER
+========================== */
+
 .banner{
     width:100%;
     height:340px;
@@ -276,4 +276,482 @@ input{
         rgba(255,255,255,0) 55%,
         rgba(255,248,252,1) 100%
     );
+}
+
+/* =====================================
+   NUEVAS TARJETAS DE REGALOS
+===================================== */
+
+.lista-regalos{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+    margin-top:25px;
+}
+
+.regalo-tarjeta{
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    background:#fff;
+    border-radius:25px;
+    border:none;
+    padding:0;
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+    transition:.30s;
+}
+
+.regalo-tarjeta:hover{
+    transform:translateY(-8px);
+    box-shadow:0 20px 45px rgba(236,72,153,.18);
+}
+
+.regalo-imagen{
+    height:220px;
+    overflow:hidden;
+    background:#f8fafc;
+}
+
+.regalo-imagen img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.40s;
+}
+
+.regalo-tarjeta:hover img{
+    transform:scale(1.05);
+}
+
+.regalo-sin-imagen{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100%;
+    font-size:70px;
+}
+
+.regalo-contenido{
+    padding:22px;
+}
+
+.categoria{
+    display:inline-block;
+    padding:6px 12px;
+    background:#fde7f3;
+    color:#be185d;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+.regalo-titulo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.regalo-descripcion{
+    color:#6b7280;
+    line-height:1.6;
+    min-height:48px;
+}
+
+.precio{
+    font-size:22px;
+    font-weight:bold;
+    color:#7c3aed;
+    margin:18px 0;
+}
+
+.acciones-regalo{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.boton-secundario{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    text-align:center;
+    color:#374151;
+    transition:.25s;
+}
+
+.boton-secundario:hover{
+    background:#f3f4f6;
+}
+
+.boton-reservar{
+    flex:1;
+}
+
+.sin-regalos{
+    grid-column:1 / -1;
+    padding:35px;
+    background:rgba(255,255,255,.75);
+    border:1px solid #fbcfe8;
+    border-radius:24px;
+    text-align:center;
+}
+
+/* =====================================
+   PANEL DE ADMINISTRACIÓN
+===================================== */
+
+.panel-admin{
+    max-width:1050px;
+}
+
+.admin-encabezado{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:25px;
+    text-align:left;
+    margin-bottom:25px;
+}
+
+.admin-encabezado h1{
+    margin-top:6px;
+}
+
+.admin-etiqueta{
+    display:inline-block;
+    color:#be185d;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+}
+
+.admin-menu{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+.admin-menu a{
+    padding:11px 17px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid #fbcfe8;
+    color:#7c3aed;
+    text-decoration:none;
+    font-weight:700;
+}
+
+.admin-seccion{
+    padding:28px;
+    margin-top:24px;
+    background:rgba(255,255,255,.72);
+    border:1px solid #f3d8e8;
+    border-radius:25px;
+    text-align:left;
+}
+
+.admin-titulo-seccion{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:22px;
+}
+
+.admin-titulo-seccion h2{
+    margin:5px 0 0;
+}
+
+.admin-contador{
+    min-width:46px;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:linear-gradient(135deg,#ec4899,#8b5cf6);
+    color:#fff;
+    font-weight:800;
+}
+
+.form-admin{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.campo-formulario{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.campo-amplio{
+    grid-column:1 / -1;
+}
+
+.campo-formulario label{
+    color:#374151;
+    font-weight:700;
+}
+
+.campo-formulario input,
+.campo-formulario select,
+.campo-formulario textarea{
+    width:100%;
+    padding:14px;
+    border:1px solid #f3c9df;
+    border-radius:14px;
+    background:#fff;
+    color:#374151;
+    font:inherit;
+    outline:none;
+}
+
+.campo-formulario input:focus,
+.campo-formulario select:focus,
+.campo-formulario textarea:focus{
+    border-color:#c084fc;
+    box-shadow:0 0 0 4px rgba(192,132,252,.15);
+}
+
+.campo-formulario small{
+    color:#6b7280;
+}
+
+.acciones-formulario{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.lista-reservas{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.reserva-admin{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:18px;
+    padding:18px;
+    border:1px solid #f3d8e8;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 8px 22px rgba(0,0,0,.05);
+}
+
+.reserva-numero{
+    width:50px;
+    height:50px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:14px;
+    background:#fce7f3;
+    color:#be185d;
+    font-weight:800;
+}
+
+.reserva-detalle p{
+    margin:5px 0 0;
+    color:#6b7280;
+}
+
+.boton-peligro{
+    background:#fee2e2;
+    color:#b91c1c;
+    box-shadow:none;
+}
+
+.boton-peligro:disabled{
+    cursor:not-allowed;
+    opacity:.55;
+}
+
+/* =====================================
+   ALERTAS
+===================================== */
+
+.alerta{
+    margin:18px 0;
+    padding:14px 18px;
+    border-radius:14px;
+    font-weight:700;
+    text-align:left;
+}
+
+.alerta-exito{
+    background:#dcfce7;
+    border:1px solid #86efac;
+    color:#166534;
+}
+
+.alerta-error{
+    background:#fee2e2;
+    border:1px solid #fca5a5;
+    color:#991b1b;
+}
+
+/* =====================================
+   PÁGINA DE CANCELACIÓN
+   SOLO AFECTA /cancelar
+===================================== */
+
+.pagina-cancelar{
+    min-height:100vh;
+    margin-top:0;
+    padding:70px 30px 50px;
+    align-items:flex-start;
+}
+
+.tarjeta-cancelar{
+    max-width:520px;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media(max-width:700px){
+
+    .admin-encabezado{
+        flex-direction:column;
+    }
+
+    .form-admin{
+        grid-template-columns:1fr;
+    }
+
+    .campo-amplio{
+        grid-column:auto;
+    }
+
+    .reserva-admin{
+        grid-template-columns:1fr;
+    }
+
+    .reserva-numero{
+        width:100%;
+    }
+
+    .reserva-acciones button{
+        width:100%;
+    }
+}
+
+@media(max-width:600px){
+
+    .banner{
+        height:250px;
+    }
+
+    .pagina{
+        padding:0 14px 30px;
+        margin-top:-60px;
+    }
+
+    .tarjeta{
+        padding:28px 20px;
+        border-radius:25px;
+    }
+
+    h1{
+        font-size:30px;
+    }
+
+    h2{
+        font-size:18px;
+    }
+
+    .regalo{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    button{
+        width:100%;
+    }
+
+    .contador{
+        gap:8px;
+    }
+
+    .contador div{
+        padding:12px 5px;
+    }
+
+    .contador strong{
+        font-size:23px;
+    }
+
+    .contador span{
+        font-size:11px;
+    }
+
+    .lista-regalos{
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .acciones-regalo{
+        flex-direction:column;
+    }
+
+    .boton-secundario,
+    .boton-reservar{
+        width:100%;
+    }
+
+    .admin-menu{
+        flex-direction:column;
+    }
+
+    .admin-menu a{
+        width:100%;
+        text-align:center;
+    }
+
+    .acciones-formulario{
+        justify-content:stretch;
+    }
+
+    .acciones-formulario button{
+        width:100%;
+    }
+
+    /* Mantiene /cancelar abajo también en celular */
+    .pagina-cancelar{
+        margin-top:0;
+        padding:45px 14px 30px;
+    }
+}
+
+/* Página exclusiva de administración */
+.pagina-admin{
+    min-height:100vh;
+    margin-top:0;
+    padding:60px 30px 50px;
+    align-items:flex-start;
+}
+
+.tarjeta-admin{
+    max-width:1050px;
+}
+
+@media(max-width:600px){
+    .pagina-admin{
+        margin-top:0;
+        padding:35px 14px 30px;
+    }
 }
