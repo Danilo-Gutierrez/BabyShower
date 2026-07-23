@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ titulo }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='css/style.css') }}"
+    >
+
+    <style>
+        .pagina-login {
+            min-height: 100vh;
+            margin-top: 0;
+            padding: 70px 30px 50px;
+            align-items: flex-start;
+        }
+
+        .tarjeta-login {
+            width: 100%;
+            max-width: 460px;
+            padding: 40px;
+        }
+
+        .encabezado-login {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .icono-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 78px;
+            height: 78px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            font-size: 36px;
+            background: linear-gradient(
+                135deg,
+                #fce7f3,
+                #ede9fe
+            );
+            box-shadow: 0 12px 30px rgba(236, 72, 153, .15);
+        }
+
+        .encabezado-login h1 {
+            margin: 0 0 10px;
+        }
+
+        .encabezado-login p {
+            margin: 0;
+            color: #6b7280;
+        }
+
+        .formulario-login {
+            display: grid;
+            gap: 18px;
+        }
+
+        .grupo-login {
+            display: grid;
+            gap: 8px;
+        }
+
+        .grupo-login label {
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .grupo-login input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            font: inherit;
+        }
+
+        .grupo-login input:focus {
+            outline: none;
+            border-color: #ec4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, .12);
+        }
+
+        .boton-login {
+            width: 100%;
+            margin-top: 5px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 12px;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(
+                135deg,
+                #ec4899,
+                #a855f7
+            );
+        }
+
+        .boton-login:hover {
+            transform: translateY(-1px);
+        }
+
+        .mensaje-error-login {
+            margin-bottom: 20px;
+            padding: 12px 15px;
+            border-radius: 12px;
+            text-align: center;
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .volver-inicio {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .pagina-login {
+                padding: 35px 18px;
+            }
+
+            .tarjeta-login {
+                padding: 28px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="pagina pagina-login">
+
+        <section class="tarjeta tarjeta-login">
+
+            <header class="encabezado-login">
+
+                <div class="icono-login">
+                    🔐
+                </div>
+
+                <h1>Panel de administración</h1>
+
+                <p>
+                    Ingresa tus credenciales para continuar.
+                </p>
+
+            </header>
+
+            {% if error == "credenciales" %}
+                <div class="mensaje-error-login">
+                    El usuario o la contraseña son incorrectos.
+                </div>
+            {% endif %}
+
+            <form
+                class="formulario-login"
+                method="post"
+                action="/admin/login"
+            >
+
+                <div class="grupo-login">
+                    <label for="usuario">
+                        Usuario
+                    </label>
+
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="grupo-login">
+                    <label for="clave">
+                        Contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        id="clave"
+                        name="clave"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button
+                    class="boton-login"
+                    type="submit"
+                >
+                    Iniciar sesión
+                </button>
+
+            </form>
+
+            <a
+                class="volver-inicio"
+                href="/"
+            >
+                ← Volver a la lista de regalos
+            </a>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

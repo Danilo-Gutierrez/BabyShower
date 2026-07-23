@@ -1,8 +1,11 @@
-from fastapi import FastAPI, Form, Request
+import os
 import secrets
+
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import (
     crear_base_datos,
@@ -18,13 +21,38 @@ from app.database import (
     regalo_esta_reservado,
 )
 
+
 app = FastAPI()
+
+
+# Configuración del administrador.
+# Más adelante estas variables se configurarán directamente en el servidor.
+ADMIN_USUARIO = os.getenv("ADMIN_USUARIO", "admin")
+ADMIN_CLAVE = os.getenv("ADMIN_CLAVE", "Thianna2026")
+
+SESSION_SECRET = os.getenv(
+    "SESSION_SECRET",
+    "baby-shower-clave-secreta-cambiar-en-produccion",
+)
+
+
+# Permite mantener iniciada la sesión del administrador.
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SESSION_SECRET,
+    session_cookie="babyshower_admin",
+    max_age=60 * 60 * 8,
+    same_site="lax",
+    https_only=False,
+)
+
 
 app.mount(
     "/static",
     StaticFiles(directory="app/static"),
     name="static",
 )
+
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -33,6 +61,13 @@ templates = Jinja2Templates(directory="app/templates")
 crear_base_datos()
 crear_tabla_regalos()
 insertar_regalos_iniciales()
+
+
+def administrador_autenticado(request: Request) -> bool:
+    """
+    Comprueba si el administrador inició sesión correctamente.
+    """
+    return request.session.get("admin_autenticado") is True
 
 
 @app.get("/")
@@ -94,8 +129,82 @@ def reservar(
     }
 
 
+# =========================================================
+# INICIO Y CIERRE DE SESIÓN DEL ADMINISTRADOR
+# =========================================================
+
+
+@app.get("/admin/login")
+def mostrar_login(
+    request: Request,
+    error: str = "",
+):
+    if administrador_autenticado(request):
+        return RedirectResponse(
+            url="/admin",
+            status_code=303,
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "titulo": "Acceso de administrador",
+            "error": error,
+        },
+    )
+
+
+@app.post("/admin/login")
+def iniciar_sesion(
+    request: Request,
+    usuario: str = Form(...),
+    clave: str = Form(...),
+):
+    usuario_correcto = secrets.compare_digest(
+        usuario.strip(),
+        ADMIN_USUARIO,
+    )
+
+    clave_correcta = secrets.compare_digest(
+        clave,
+        ADMIN_CLAVE,
+    )
+
+    if not usuario_correcto or not clave_correcta:
+        return RedirectResponse(
+            url="/admin/login?error=credenciales",
+            status_code=303,
+        )
+
+    request.session.clear()
+    request.session["admin_autenticado"] = True
+    request.session["admin_usuario"] = ADMIN_USUARIO
+
+    return RedirectResponse(
+        url="/admin",
+        status_code=303,
+    )
+
+
+@app.post("/admin/logout")
+def cerrar_sesion(request: Request):
+    request.session.clear()
+
+    return RedirectResponse(
+        url="/admin/login",
+        status_code=303,
+    )
+
+
+# =========================================================
+# FUNCIONES PROTEGIDAS DEL ADMINISTRADOR
+# =========================================================
+
+
 @app.post("/admin/regalos")
 def crear_regalo(
+    request: Request,
     emoji: str = Form("🎁"),
     nombre: str = Form(...),
     descripcion: str = Form(""),
@@ -104,6 +213,12 @@ def crear_regalo(
     imagen: str = Form(""),
     enlace: str = Form(""),
 ):
+    if not administrador_autenticado(request):
+        return RedirectResponse(
+            url="/admin/login",
+            status_code=303,
+        )
+
     nombre_limpio = nombre.strip()
 
     if not nombre_limpio:
@@ -129,15 +244,31 @@ def crear_regalo(
 
 
 @app.get("/admin/reservas")
-def ver_reservas():
+def ver_reservas(request: Request):
+    if not administrador_autenticado(request):
+        return RedirectResponse(
+            url="/admin/login",
+            status_code=303,
+        )
+
     reservas = obtener_reservas()
 
     return {
         "reservas": reservas,
     }
 
+
 @app.post("/admin/reservas/{id_reserva}/liberar")
-def liberar_reserva(id_reserva: int):
+def liberar_reserva(
+    request: Request,
+    id_reserva: int,
+):
+    if not administrador_autenticado(request):
+        return RedirectResponse(
+            url="/admin/login",
+            status_code=303,
+        )
+
     eliminar_reserva(id_reserva)
 
     return RedirectResponse(
@@ -145,40 +276,6 @@ def liberar_reserva(id_reserva: int):
         status_code=303,
     )
 
-@app.get("/cancelar")
-def mostrar_cancelacion(
-    request: Request,
-    cancelada: int = 0,
-    error: str = "",
-):
-    return templates.TemplateResponse(
-        request=request,
-        name="cancelar.html",
-        context={
-            "cancelada": cancelada,
-            "error": error,
-        },
-    )
-
-
-@app.post("/cancelar")
-def cancelar_reserva(codigo: str = Form(...)):
-    codigo_limpio = codigo.strip().upper()
-
-    reserva = obtener_reserva_por_codigo(codigo_limpio)
-
-    if reserva is None:
-        return RedirectResponse(
-            url="/cancelar?error=codigo",
-            status_code=303,
-        )
-
-    eliminar_reserva(reserva["id"])
-
-    return RedirectResponse(
-        url="/cancelar?cancelada=1",
-        status_code=303,
-    )
 
 @app.get("/admin")
 def admin(
@@ -187,6 +284,12 @@ def admin(
     liberada: int = 0,
     error: str = "",
 ):
+    if not administrador_autenticado(request):
+        return RedirectResponse(
+            url="/admin/login",
+            status_code=303,
+        )
+
     reservas = obtener_reservas()
     regalos = obtener_regalos()
 
@@ -226,5 +329,50 @@ def admin(
             "guardado": guardado,
             "liberada": liberada,
             "error": error,
+            "admin_usuario": request.session.get(
+                "admin_usuario",
+                ADMIN_USUARIO,
+            ),
         },
+    )
+
+
+# =========================================================
+# CANCELACIÓN PÚBLICA DE RESERVAS
+# =========================================================
+
+
+@app.get("/cancelar")
+def mostrar_cancelacion(
+    request: Request,
+    cancelada: int = 0,
+    error: str = "",
+):
+    return templates.TemplateResponse(
+        request=request,
+        name="cancelar.html",
+        context={
+            "cancelada": cancelada,
+            "error": error,
+        },
+    )
+
+
+@app.post("/cancelar")
+def cancelar_reserva(codigo: str = Form(...)):
+    codigo_limpio = codigo.strip().upper()
+
+    reserva = obtener_reserva_por_codigo(codigo_limpio)
+
+    if reserva is None:
+        return RedirectResponse(
+            url="/cancelar?error=codigo",
+            status_code=303,
+        )
+
+    eliminar_reserva(reserva["id"])
+
+    return RedirectResponse(
+        url="/cancelar?cancelada=1",
+        status_code=303,
     )
