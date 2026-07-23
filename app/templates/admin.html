@@ -31,9 +31,22 @@
                     </p>
                 </div>
 
-                <a class="boton-secundario" href="/">
-                    Ver página pública
-                </a>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+                    <a class="boton-secundario" href="/">
+                        Ver página pública
+                    </a>
+
+                    <form action="/admin/logout" method="post">
+                        <button
+                            type="submit"
+                            class="boton-secundario"
+                        >
+                            Cerrar sesión
+                        </button>
+                    </form>
+
+                </div>
 
             </header>
 
@@ -68,6 +81,18 @@
             </div>
             {% endif %}
 
+            {% if error == "imagen" %}
+            <div class="alerta alerta-error">
+                ⚠️ La imagen debe ser JPG, JPEG, PNG o WEBP.
+            </div>
+            {% endif %}
+
+            {% if error == "tamano" %}
+            <div class="alerta alerta-error">
+                ⚠️ La imagen no puede superar los 5 MB.
+            </div>
+            {% endif %}
+
             <section class="admin-seccion" id="nuevo-regalo">
 
                 <div class="admin-titulo-seccion">
@@ -87,6 +112,7 @@
                     id="formNuevoRegalo"
                     action="/admin/regalos"
                     method="post"
+                    enctype="multipart/form-data"
                 >
 
                     <div class="campo-formulario">
@@ -167,19 +193,19 @@
 
                     <div class="campo-formulario campo-amplio">
                         <label for="imagen">
-                            Nombre de la imagen
+                            Imagen del regalo
                         </label>
 
                         <input
                             id="imagen"
                             name="imagen"
-                            type="text"
-                            placeholder="porta-bebe.jpg"
+                            type="file"
+                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                         >
 
                         <small>
-                            La imagen debe existir en
-                            <code>app/static/img</code>
+                            Formatos permitidos: JPG, JPEG, PNG y WEBP.
+                            Tamaño máximo: 5 MB.
                         </small>
                     </div>
 

@@ -1,11 +1,13 @@
 import os
 import secrets
+from pathlib import Path
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
+
 
 from app.database import (
     crear_base_datos,
@@ -55,6 +57,11 @@ app.mount(
 
 
 templates = Jinja2Templates(directory="app/templates")
+
+CARPETA_IMAGENES = Path("app/static/img")
+CARPETA_IMAGENES.mkdir(parents=True, exist_ok=True)
+
+EXTENSIONES_PERMITIDAS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
 # Crear las tablas e insertar los regalos iniciales al iniciar la aplicación.
@@ -203,14 +210,14 @@ def cerrar_sesion(request: Request):
 
 
 @app.post("/admin/regalos")
-def crear_regalo(
+async def crear_regalo(
     request: Request,
     emoji: str = Form("🎁"),
     nombre: str = Form(...),
     descripcion: str = Form(""),
     categoria: str = Form(""),
     precio: int = Form(0),
-    imagen: str = Form(""),
+    imagen: UploadFile | None = File(None),
     enlace: str = Form(""),
 ):
     if not administrador_autenticado(request):
@@ -227,11 +234,36 @@ def crear_regalo(
             status_code=303,
         )
 
+    nombre_imagen = ""
+
+    if imagen and imagen.filename:
+        extension = Path(imagen.filename).suffix.lower()
+
+        if extension not in EXTENSIONES_PERMITIDAS:
+            return RedirectResponse(
+                url="/admin?error=imagen",
+                status_code=303,
+            )
+
+        nombre_seguro = f"{secrets.token_hex(8)}{extension}"
+        ruta_destino = CARPETA_IMAGENES / nombre_seguro
+
+        contenido = await imagen.read()
+
+        if len(contenido) > 5 * 1024 * 1024:
+            return RedirectResponse(
+                url="/admin?error=tamano",
+                status_code=303,
+            )
+
+        ruta_destino.write_bytes(contenido)
+        nombre_imagen = nombre_seguro
+
     guardar_regalo(
         emoji=emoji.strip() or "🎁",
         nombre=nombre_limpio,
         descripcion=descripcion.strip(),
-        imagen=imagen.strip(),
+        imagen=nombre_imagen,
         categoria=categoria.strip(),
         precio=max(precio, 0),
         enlace=enlace.strip(),
